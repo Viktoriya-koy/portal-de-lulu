@@ -269,4 +269,219 @@ function setupDoodleGenerator() {
             const color = colors[Math.floor(Math.random() * colors.length)];
             const opacity = Math.random() * 0.7 + 0.3;
             
-            let shape
+            let shapeElement;
+            
+            switch(shapeType) {
+                case 'circle':
+                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    shapeElement.setAttribute('cx', Math.random() * 180 + 10);
+                    shapeElement.setAttribute('cy', Math.random() * 130 + 10);
+                    shapeElement.setAttribute('r', Math.random() * 30 + 10);
+                    break;
+                    
+                case 'rect':
+                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    shapeElement.setAttribute('x', Math.random() * 150);
+                    shapeElement.setAttribute('y', Math.random() * 100);
+                    shapeElement.setAttribute('width', Math.random() * 50 + 20);
+                    shapeElement.setAttribute('height', Math.random() * 50 + 20);
+                    shapeElement.setAttribute('rx', Math.random() * 15);
+                    break;
+                    
+                case 'line':
+                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    shapeElement.setAttribute('x1', Math.random() * 200);
+                    shapeElement.setAttribute('y1', Math.random() * 150);
+                    shapeElement.setAttribute('x2', Math.random() * 200);
+                    shapeElement.setAttribute('y2', Math.random() * 150);
+                    shapeElement.setAttribute('stroke-width', Math.random() * 5 + 1);
+                    break;
+                    
+                case 'polygon':
+                    const points = [];
+                    const numPoints = Math.floor(Math.random() * 4) + 3;
+                    for (let p = 0; p < numPoints; p++) {
+                        points.push(`${Math.random() * 180 + 10},${Math.random() * 130 + 10}`);
+                    }
+                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    shapeElement.setAttribute('points', points.join(' '));
+                    break;
+                    
+                case 'path':
+                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const d = `M ${Math.random() * 50 + 50} ${Math.random() * 50 + 50} 
+                               C ${Math.random() * 200} ${Math.random() * 150}, 
+                                 ${Math.random() * 200} ${Math.random() * 150}, 
+                                 ${Math.random() * 150 + 50} ${Math.random() * 100 + 50}`;
+                    shapeElement.setAttribute('d', d);
+                    shapeElement.setAttribute('fill', 'none');
+                    shapeElement.setAttribute('stroke-width', Math.random() * 3 + 1);
+                    color = colors[Math.floor(Math.random() * colors.length)];
+                    break;
+            }
+            
+            shapeElement.setAttribute('fill', shapeType !== 'line' && shapeType !== 'path' ? color : 'none');
+            shapeElement.setAttribute('stroke', color);
+            shapeElement.setAttribute('opacity', opacity);
+            
+            if (shapeType === 'line' || shapeType === 'path') {
+                shapeElement.setAttribute('stroke', color);
+            }
+            
+            doodleSVG.appendChild(shapeElement);
+        }
+        
+        // Asignar un nombre aleatorio al doodle
+        const randomName = doodleNames[Math.floor(Math.random() * doodleNames.length)];
+        doodleName.textContent = `"${randomName}"`;
+        
+        // Efecto visual en el botón
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 150);
+    });
+}
+
+// Zona de doodles
+function setupDoodleZone() {
+    const canvas = document.getElementById('doodleCanvas');
+    const ctx = canvas.getContext('2d');
+    const colorOptions = document.querySelectorAll('.color-option');
+    const brushSize = document.getElementById('brushSize');
+    const brushSizeValue = document.getElementById('brushSizeValue');
+    const clearButton = document.getElementById('clearCanvas');
+    const saveButton = document.getElementById('saveDoodle');
+    
+    // Ajustar canvas al tamaño de pantalla
+    function resizeCanvas() {
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth - 30;
+        canvas.height = Math.min(500, canvas.width * 0.6);
+        
+        // Redibujar contenido (si hubiera)
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+    }
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Estado del dibujo
+    let drawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    let currentColor = '#8A2BE2';
+    let currentSize = 5;
+    
+    // Configurar canvas
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    // Eventos del mouse/touch
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+    
+    // Para dispositivos táctiles
+    canvas.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousedown', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+    
+    canvas.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+    
+    canvas.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        const mouseEvent = new MouseEvent('mouseup', {});
+        canvas.dispatchEvent(mouseEvent);
+    });
+    
+    // Funciones de dibujo
+    function startDrawing(e) {
+        drawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    }
+    
+    function draw(e) {
+        if (!drawing) return;
+        
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = currentSize;
+        
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+        
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    }
+    
+    function stopDrawing() {
+        drawing = false;
+    }
+    
+    // Selector de color
+    colorOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            colorOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            currentColor = this.getAttribute('data-color');
+        });
+    });
+    
+    // Control de grosor del pincel
+    brushSize.addEventListener('input', function() {
+        currentSize = this.value;
+        brushSizeValue.textContent = currentSize;
+    });
+    
+    // Botón limpiar
+    clearButton.addEventListener('click', function() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Efecto visual
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 150);
+    });
+    
+    // Botón guardar
+    saveButton.addEventListener('click', function() {
+        const link = document.createElement('a');
+        link.download = `doodle-luhe-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        // Efecto visual
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 150);
+    });
+    
+    // Sugerencias de doodles
+    document.querySelectorAll('.prompt').forEach(prompt => {
+        prompt.addEventListener('click', function() {
+            alert(`¡Buena idea! Ahora dibuja: "${this.textContent}"`);
+        });
+    });
+}
