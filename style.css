@@ -1,0 +1,529 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Neue', cursive;
+    background: linear-gradient(135deg, #f9f0ff 0%, #e6f0ff 100%);
+    color: #333;
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+/* Navegación */
+.navbar {
+    background: linear-gradient(90deg, #8A2BE2 0%, #4169E1 100%);
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.highlight {
+    color: #FFD700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Secciones */
+.section {
+    display: none;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section.active {
+    display: block;
+    animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero section */
+.hero {
+    text-align: center;
+    margin: 3rem 0;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(138, 43, 226, 0.1);
+}
+
+.title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #8A2BE2, #4169E1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.name {
+    text-decoration: underline wavy #FFD700;
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.color-bar {
+    display: flex;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.color-violet { flex: 1; background: #8A2BE2; }
+.color-blue { flex: 1; background: #4169E1; }
+.color-light { flex: 1; background: #00BFFF; }
+
+/* Contenedores de mensajes y juegos */
+.messages-container, .mood-tree, .sounds, .game-container, .doodle-zone {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 25px rgba(138, 43, 226, 0.1);
+}
+
+h2 {
+    color: #4B0082;
+    margin-bottom: 1.5rem;
+    font-family: 'Fredoka One', cursive;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.instruction {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+/* Mensajes interactivos */
+.message-elements {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.message-element {
+    font-size: 3.5rem;
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    background: #f0f8ff;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message-element:hover {
+    transform: scale(1.2) rotate(10deg);
+    background: #e6e6fa;
+}
+
+.message-display {
+    min-height: 80px;
+    background: #f9f0ff;
+    border: 2px dashed #8A2BE2;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+/* Árbol de estados de ánimo */
+.tree-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tree-trunk {
+    width: 40px;
+    height: 100px;
+    background: #8B4513;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.tree-branches {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.branch {
+    background: linear-gradient(135deg, #9370DB, #6495ED);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.branch:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
+}
+
+.tree-response {
+    min-height: 80px;
+    background: #f0f8ff;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    width: 80%;
+    border-left: 5px solid #4169E1;
+}
+
+/* Sonidos */
+.sound-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.sound-btn {
+    background: linear-gradient(135deg, #4169E1, #00BFFF);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.sound-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(65, 105, 225, 0.3);
+}
+
+/* Memory Game */
+.memory-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.memory-card {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #9370DB, #6495ED);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    color: white;
+}
+
+.memory-card.flipped {
+    transform: rotateY(180deg);
+    background: white;
+    color: #333;
+}
+
+.memory-card.matched {
+    background: #90EE90;
+    cursor: default;
+}
+
+.game-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.score {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4B0082;
+}
+
+.game-btn {
+    background: linear-gradient(135deg, #8A2BE2, #4169E1);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.game-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+}
+
+.big-btn {
+    font-size: 1.2rem;
+    padding: 1.2rem 2.5rem;
+}
+
+/* Generador de doodles */
+.doodle-generator {
+    text-align: center;
+}
+
+.doodle-display {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.doodle-canvas {
+    background: white;
+    border: 3px dashed #8A2BE2;
+    border-radius: 15px;
+    padding: 2rem;
+    min-width: 250px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.doodle-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4B0082;
+    padding: 1rem 2rem;
+    background: #f0f8ff;
+    border-radius: 30px;
+}
+
+/* Zona de doodles */
+.drawing-controls {
+    background: #f9f0ff;
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.color-picker {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.color-option.active {
+    border-color: white;
+    box-shadow: 0 0 0 3px #333;
+    transform: scale(1.1);
+}
+
+.brush-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 200px;
+}
+
+.doodle-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.doodle-btn {
+    background: linear-gradient(135deg, #4169E1, #00BFFF);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.doodle-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(65, 105, 225, 0.3);
+}
+
+.canvas-container {
+    background: white;
+    border-radius: 15px;
+    padding: 1rem;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: auto;
+}
+
+#doodleCanvas {
+    display: block;
+    background: white;
+    border-radius: 10px;
+    border: 2px solid #e6e6fa;
+    cursor: crosshair;
+    max-width: 100%;
+}
+
+.doodle-prompts {
+    background: #f0f8ff;
+    padding: 1.5rem;
+    border-radius: 15px;
+}
+
+.prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.prompt {
+    background: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    border: 2px solid #8A2BE2;
+    font-weight: bold;
+    color: #4B0082;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.prompt:hover {
+    background: #8A2BE2;
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+    background: linear-gradient(90deg, #8A2BE2 0%, #4169E1 100%);
+    color: white;
+}
+
+.footer-note {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-links {
+        gap: 1rem;
+    }
+    
+    .title {
+        font-size: 2.2rem;
+    }
+    
+    .memory-board {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .drawing-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .message-elements {
+        gap: 1.5rem;
+    }
+    
+    .message-element {
+        width: 80px;
+        height: 80px;
+        font-size: 2.8rem;
+    }
+}
