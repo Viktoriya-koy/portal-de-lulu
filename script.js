@@ -1,31 +1,23 @@
-// Configuración global
 document.addEventListener('DOMContentLoaded', function() {
-    // Configurar año actual en el footer
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    // Configuración inicial
+    initApp();
     
-    // Navegación entre secciones
+    // Funcionalidades
     setupNavigation();
-    
-    // Mensajes interactivos
     setupInteractiveMessages();
-    
-    // Árbol de estados de ánimo
     setupMoodTree();
-    
-    // Sonidos
-    setupSounds();
-    
-    // Memory Game
+    setupBreathingExercise();
     setupMemoryGame();
-    
-    // Generador de doodles aleatorios
-    setupDoodleGenerator();
-    
-    // Zona de doodles
-    setupDoodleZone();
+    setupReactionGame();
+    setupDrawingZone();
 });
 
-// Navegación
+function initApp() {
+    // Año actual en footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+}
+
+// ================= NAVEGACIÓN =================
 function setupNavigation() {
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
@@ -35,46 +27,43 @@ function setupNavigation() {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             
-            // Actualizar navegación activa
+            // Actualizar navegación
             navLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
             
-            // Mostrar sección correspondiente
+            // Mostrar sección
             sections.forEach(section => {
                 section.classList.remove('active');
-                if (section.id === targetId) {
-                    section.classList.add('active');
-                }
+                if (section.id === targetId) section.classList.add('active');
             });
             
-            // Scroll suave al principio de la sección
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 }
 
-// Mensajes interactivos
+// ================= MENSAJES INTERACTIVOS =================
 function setupInteractiveMessages() {
     const messageElements = document.querySelectorAll('.message-element');
     const messageDisplay = document.getElementById('messageDisplay');
     
     messageElements.forEach(element => {
-        element.addEventListener('mouseenter', function() {
+        element.addEventListener('click', function() {
             const message = this.getAttribute('data-message');
             messageDisplay.textContent = message;
             messageDisplay.style.backgroundColor = '#e6e6fa';
             messageDisplay.style.borderColor = '#4169E1';
-        });
-        
-        element.addEventListener('mouseleave', function() {
-            messageDisplay.textContent = 'Haz hover sobre los iconos para ver mensajes secretos';
-            messageDisplay.style.backgroundColor = '#f9f0ff';
-            messageDisplay.style.borderColor = '#8A2BE2';
+            
+            // Efecto visual
+            this.style.transform = 'translateY(-8px) scale(1.05)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-8px)';
+            }, 200);
         });
     });
 }
 
-// Árbol de estados de ánimo
+// ================= ÁRBOL DE ESTADOS DE ÁNIMO =================
 function setupMoodTree() {
     const branches = document.querySelectorAll('.branch');
     const treeResponse = document.getElementById('treeResponse');
@@ -85,94 +74,111 @@ function setupMoodTree() {
             treeResponse.textContent = response;
             treeResponse.style.backgroundColor = '#e6f0ff';
             
-            // Efecto visual en el botón clickeado
-            branches.forEach(b => b.style.transform = 'translateY(0)');
-            this.style.transform = 'translateY(-5px)';
-            this.style.boxShadow = '0 8px 20px rgba(100, 149, 237, 0.5)';
+            // Efecto visual
+            branches.forEach(b => {
+                b.style.transform = 'translateY(0)';
+                b.style.boxShadow = 'none';
+            });
+            this.style.transform = 'translateY(-8px)';
+            this.style.boxShadow = '0 10px 25px rgba(100, 149, 237, 0.4)';
+            
+            // Color aleatorio del borde
+            const colors = ['#8A2BE2', '#4169E1', '#FF69B4', '#00BFFF'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            treeResponse.style.borderLeftColor = randomColor;
         });
     });
 }
 
-// Sonidos
-function setupSounds() {
-    const sounds = {
-        rain: new Howl({ src: ['https://assets.mixkit.co/sfx/preview/mixkit-rain-loop-1246.mp3'], loop: true }),
-        coffee: new Howl({ src: ['https://assets.mixkit.co/sfx/preview/mixkit-coffee-machine-bubble-833.mp3'], loop: true }),
-        fire: new Howl({ src: ['https://assets.mixkit.co/sfx/preview/mixkit-campfire-crackles-1330.mp3'], loop: true })
-    };
+// ================= EJERCICIO DE RESPIRACIÓN =================
+function setupBreathingExercise() {
+    const breathingCircle = document.getElementById('breathingCircle');
+    const startBtn = document.getElementById('startBreathing');
+    const stopBtn = document.getElementById('stopBreathing');
+    const breathInstruction = document.getElementById('breathInstruction');
     
-    let currentSound = null;
+    let breathingInterval;
+    let isBreathing = false;
+    let breatheIn = true;
+    let cycleCount = 0;
     
-    document.querySelectorAll('.sound-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const soundType = this.getAttribute('data-sound');
-            
-            // Si hay un sonido reproduciéndose, lo paramos
-            if (currentSound && currentSound.playing()) {
-                currentSound.stop();
-            }
-            
-            // Si es el mismo botón, solo paramos
-            if (currentSound === sounds[soundType] && sounds[soundType].playing()) {
-                currentSound = null;
-                return;
-            }
-            
-            // Reproducimos el nuevo sonido
-            if (sounds[soundType]) {
-                sounds[soundType].play();
-                currentSound = sounds[soundType];
-                
-                // Efecto visual
-                document.querySelectorAll('.sound-btn').forEach(b => {
-                    b.style.transform = 'translateY(0)';
-                    b.style.boxShadow = 'none';
-                });
-                this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = '0 8px 20px rgba(65, 105, 225, 0.4)';
-            }
-        });
-    });
-    
-    // Botón para parar todos los sonidos
-    document.getElementById('stopSounds').addEventListener('click', function() {
-        if (currentSound && currentSound.playing()) {
-            currentSound.stop();
-            currentSound = null;
-        }
+    function startBreathing() {
+        if (isBreathing) return;
         
-        // Resetear estilos de botones
-        document.querySelectorAll('.sound-btn').forEach(b => {
-            b.style.transform = 'translateY(0)';
-            b.style.boxShadow = 'none';
-        });
-    });
+        isBreathing = true;
+        breathingCircle.style.animation = 'pulse 4s infinite ease-in-out';
+        breathInstruction.textContent = 'Inhala... (4 segundos)';
+        breatheIn = true;
+        cycleCount = 0;
+        
+        breathingInterval = setInterval(() => {
+            if (breatheIn) {
+                breathingCircle.querySelector('.breath-text').textContent = 'INHALA';
+                breathInstruction.textContent = 'Inhala profundamente... (4 segundos)';
+                breatheIn = false;
+            } else {
+                breathingCircle.querySelector('.breath-text').textContent = 'EXHALA';
+                breathInstruction.textContent = 'Exhala lentamente... (6 segundos)';
+                breatheIn = true;
+                cycleCount++;
+                
+                if (cycleCount >= 3) {
+                    breathInstruction.textContent = '¡Bien hecho! 3 ciclos completados.';
+                    setTimeout(() => {
+                        if (isBreathing) {
+                            breathInstruction.textContent = 'Continúa... Inhala...';
+                        }
+                    }, 2000);
+                }
+            }
+        }, 4000);
+        
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+    }
+    
+    function stopBreathing() {
+        clearInterval(breathingInterval);
+        isBreathing = false;
+        breathingCircle.style.animation = 'none';
+        breathingCircle.querySelector('.breath-text').textContent = 'INHALA';
+        breathInstruction.textContent = 'Ejercicio detenido. Haz clic en "Comenzar" para iniciar de nuevo.';
+        
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    }
+    
+    startBtn.addEventListener('click', startBreathing);
+    stopBtn.addEventListener('click', stopBreathing);
+    stopBtn.disabled = true;
 }
 
-// Memory Game
+// ================= MEMORY GAME =================
 function setupMemoryGame() {
     const memoryBoard = document.getElementById('memoryBoard');
     const scoreElement = document.getElementById('score');
+    const movesElement = document.getElementById('moves');
     const resetButton = document.getElementById('resetMemory');
     
-    const emojis = ['😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🐱'];
+    const emojis = ['😺', '😸', '😹', '😻', '😼', '😽'];
     let selectedEmojis = [];
     let flippedCards = [];
     let matchedPairs = 0;
     let score = 0;
+    let moves = 0;
     
     function initMemoryGame() {
-        // Seleccionar 6 emojis aleatorios y duplicarlos
-        selectedEmojis = [...emojis].sort(() => 0.5 - Math.random()).slice(0, 6);
-        selectedEmojis = [...selectedEmojis, ...selectedEmojis];
-        selectedEmojis = selectedEmojis.sort(() => 0.5 - Math.random());
+        // Seleccionar y duplicar emojis
+        selectedEmojis = [...emojis, ...emojis];
+        selectedEmojis = selectedEmojis.sort(() => Math.random() - 0.5);
         
         // Limpiar tablero
         memoryBoard.innerHTML = '';
         flippedCards = [];
         matchedPairs = 0;
         score = 0;
-        scoreElement.textContent = score;
+        moves = 0;
+        updateScore();
         
         // Crear cartas
         selectedEmojis.forEach((emoji, index) => {
@@ -192,15 +198,15 @@ function setupMemoryGame() {
     }
     
     function flipCard() {
-        // No hacer nada si ya hay 2 cartas volteadas o si esta ya está volteada
         if (flippedCards.length >= 2 || this.classList.contains('flipped') || this.classList.contains('matched')) {
             return;
         }
         
         this.classList.add('flipped');
         flippedCards.push(this);
+        moves++;
+        movesElement.textContent = moves;
         
-        // Si hay 2 cartas volteadas, verificar si hacen match
         if (flippedCards.length === 2) {
             setTimeout(checkMatch, 600);
         }
@@ -214,230 +220,293 @@ function setupMemoryGame() {
             card1.classList.add('matched');
             card2.classList.add('matched');
             matchedPairs++;
-            score++;
-            scoreElement.textContent = score;
+            score += 10;
             
-            // Verificar si el juego terminó
             if (matchedPairs === 6) {
                 setTimeout(() => {
-                    alert('¡Felicidades! Has encontrado todos los pares de gatitos. 🎉');
+                    alert(`¡Felicidades! 🎉\nEncontraste todos los pares en ${moves} movimientos.\nPuntuación: ${score}`);
                 }, 500);
             }
         } else {
             card1.classList.remove('flipped');
             card2.classList.remove('flipped');
+            score = Math.max(0, score - 1);
         }
         
         flippedCards = [];
+        updateScore();
+    }
+    
+    function updateScore() {
+        scoreElement.textContent = matchedPairs;
+        movesElement.textContent = moves;
     }
     
     resetButton.addEventListener('click', initMemoryGame);
     initMemoryGame();
 }
 
-// Generador de doodles aleatorios
-function setupDoodleGenerator() {
-    const generateButton = document.getElementById('generateDoodle');
-    const doodleSVG = document.getElementById('doodleSVG');
-    const doodleName = document.getElementById('doodleName');
+// ================= JUEGO DE REACCIÓN =================
+function setupReactionGame() {
+    const reactionArea = document.getElementById('reactionArea');
+    const reactionTime = document.getElementById('reactionTime');
+    const reactionScore = document.getElementById('reactionScore');
+    const reactionBest = document.getElementById('reactionBest');
+    const startBtn = document.getElementById('startReaction');
+    const resetBtn = document.getElementById('resetReaction');
     
-    const doodleNames = [
-        "Gatito Cósmico",
-        "Flor Espacial",
-        "Corazón Vibrante",
-        "Estrella Fugaz",
-        "Espiral de Sueños",
-        "Nube Melódica",
-        "Mariposa Digital",
-        "Árbol de Luz",
-        "Ola Violeta",
-        "Constelación Azul"
-    ];
+    let gameActive = false;
+    let startTime;
+    let score = 0;
+    let bestTime = localStorage.getItem('bestReactionTime') || 0;
+    reactionBest.textContent = bestTime;
     
-    const shapes = ['circle', 'rect', 'line', 'polygon', 'path'];
-    const colors = ['#8A2BE2', '#4B0082', '#4169E1', '#00BFFF', '#9370DB', '#6495ED'];
-    
-    generateButton.addEventListener('click', function() {
-        // Limpiar SVG anterior
-        doodleSVG.innerHTML = '';
+    function createTarget() {
+        reactionArea.innerHTML = '';
         
-        // Generar 3-6 formas aleatorias
-        const numShapes = Math.floor(Math.random() * 4) + 3;
+        const size = Math.random() * 80 + 40;
+        const x = Math.random() * (reactionArea.offsetWidth - size);
+        const y = Math.random() * (reactionArea.offsetHeight - size);
         
-        for (let i = 0; i < numShapes; i++) {
-            const shapeType = shapes[Math.floor(Math.random() * shapes.length)];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const opacity = Math.random() * 0.7 + 0.3;
+        const target = document.createElement('div');
+        target.className = 'reaction-target';
+        target.style.width = `${size}px`;
+        target.style.height = `${size}px`;
+        target.style.left = `${x}px`;
+        target.style.top = `${y}px`;
+        
+        target.addEventListener('click', function() {
+            if (!gameActive) return;
             
-            let shapeElement;
+            const endTime = Date.now();
+            const timeTaken = endTime - startTime;
             
-            switch(shapeType) {
-                case 'circle':
-                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    shapeElement.setAttribute('cx', Math.random() * 180 + 10);
-                    shapeElement.setAttribute('cy', Math.random() * 130 + 10);
-                    shapeElement.setAttribute('r', Math.random() * 30 + 10);
-                    break;
-                    
-                case 'rect':
-                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    shapeElement.setAttribute('x', Math.random() * 150);
-                    shapeElement.setAttribute('y', Math.random() * 100);
-                    shapeElement.setAttribute('width', Math.random() * 50 + 20);
-                    shapeElement.setAttribute('height', Math.random() * 50 + 20);
-                    shapeElement.setAttribute('rx', Math.random() * 15);
-                    break;
-                    
-                case 'line':
-                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    shapeElement.setAttribute('x1', Math.random() * 200);
-                    shapeElement.setAttribute('y1', Math.random() * 150);
-                    shapeElement.setAttribute('x2', Math.random() * 200);
-                    shapeElement.setAttribute('y2', Math.random() * 150);
-                    shapeElement.setAttribute('stroke-width', Math.random() * 5 + 1);
-                    break;
-                    
-                case 'polygon':
-                    const points = [];
-                    const numPoints = Math.floor(Math.random() * 4) + 3;
-                    for (let p = 0; p < numPoints; p++) {
-                        points.push(`${Math.random() * 180 + 10},${Math.random() * 130 + 10}`);
-                    }
-                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                    shapeElement.setAttribute('points', points.join(' '));
-                    break;
-                    
-                case 'path':
-                    shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    const d = `M ${Math.random() * 50 + 50} ${Math.random() * 50 + 50} 
-                               C ${Math.random() * 200} ${Math.random() * 150}, 
-                                 ${Math.random() * 200} ${Math.random() * 150}, 
-                                 ${Math.random() * 150 + 50} ${Math.random() * 100 + 50}`;
-                    shapeElement.setAttribute('d', d);
-                    shapeElement.setAttribute('fill', 'none');
-                    shapeElement.setAttribute('stroke-width', Math.random() * 3 + 1);
-                    color = colors[Math.floor(Math.random() * colors.length)];
-                    break;
+            reactionTime.textContent = timeTaken;
+            score++;
+            reactionScore.textContent = score;
+            
+            if (timeTaken < bestTime || bestTime === 0) {
+                bestTime = timeTaken;
+                reactionBest.textContent = bestTime;
+                localStorage.setItem('bestReactionTime', bestTime);
+                this.style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
             }
             
-            shapeElement.setAttribute('fill', shapeType !== 'line' && shapeType !== 'path' ? color : 'none');
-            shapeElement.setAttribute('stroke', color);
-            shapeElement.setAttribute('opacity', opacity);
-            
-            if (shapeType === 'line' || shapeType === 'path') {
-                shapeElement.setAttribute('stroke', color);
-            }
-            
-            doodleSVG.appendChild(shapeElement);
-        }
+            this.remove();
+            setTimeout(createTarget, Math.random() * 800 + 400);
+            startTime = Date.now();
+        });
         
-        // Asignar un nombre aleatorio al doodle
-        const randomName = doodleNames[Math.floor(Math.random() * doodleNames.length)];
-        doodleName.textContent = `"${randomName}"`;
+        reactionArea.appendChild(target);
+    }
+    
+    startBtn.addEventListener('click', function() {
+        if (gameActive) return;
         
-        // Efecto visual en el botón
-        this.style.transform = 'scale(0.95)';
+        gameActive = true;
+        score = 0;
+        reactionScore.textContent = score;
+        reactionTime.textContent = '0';
+        reactionArea.innerHTML = '<p>¡Preparate! El objetivo aparecerá pronto...</p>';
+        
         setTimeout(() => {
-            this.style.transform = 'scale(1)';
-        }, 150);
+            reactionArea.innerHTML = '';
+            createTarget();
+            startTime = Date.now();
+        }, Math.random() * 1500 + 1000);
+        
+        startBtn.disabled = true;
+        setTimeout(() => {
+            startBtn.disabled = false;
+        }, 2000);
+    });
+    
+    resetBtn.addEventListener('click', function() {
+        gameActive = false;
+        reactionArea.innerHTML = '<p>Haz clic en "Comenzar Juego"</p>';
+        score = 0;
+        reactionScore.textContent = score;
+        reactionTime.textContent = '0';
     });
 }
 
-// Zona de doodles
-function setupDoodleZone() {
-    const canvas = document.getElementById('doodleCanvas');
+// ================= ZONA DE DIBUJO =================
+function setupDrawingZone() {
+    const canvas = document.getElementById('drawingCanvas');
     const ctx = canvas.getContext('2d');
     const colorOptions = document.querySelectorAll('.color-option');
     const brushSize = document.getElementById('brushSize');
     const brushSizeValue = document.getElementById('brushSizeValue');
-    const clearButton = document.getElementById('clearCanvas');
-    const saveButton = document.getElementById('saveDoodle');
-    
-    // Ajustar canvas al tamaño de pantalla
-    function resizeCanvas() {
-        const container = canvas.parentElement;
-        canvas.width = container.clientWidth - 30;
-        canvas.height = Math.min(500, canvas.width * 0.6);
-        
-        // Redibujar contenido (si hubiera)
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-    }
-    
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    const opacity = document.getElementById('opacity');
+    const opacityValue = document.getElementById('opacityValue');
+    const toolButtons = document.querySelectorAll('.tool-btn');
+    const clearBtn = document.getElementById('clearCanvas');
+    const undoBtn = document.getElementById('undoDrawing');
+    const saveBtn = document.getElementById('saveDrawing');
+    const fillBtn = document.getElementById('fillBackground');
+    const ideaButtons = document.querySelectorAll('.idea-btn');
     
     // Estado del dibujo
     let drawing = false;
     let lastX = 0;
     let lastY = 0;
+    let currentTool = 'brush';
     let currentColor = '#8A2BE2';
     let currentSize = 5;
+    let currentOpacity = 1;
+    let history = [];
+    let startX, startY;
     
-    // Configurar canvas
+    // Inicializar canvas
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    saveState();
     
-    // Eventos del mouse/touch
+    // Eventos del mouse
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
     
-    // Para dispositivos táctiles
-    canvas.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        const mouseEvent = new MouseEvent('mousedown', {
-            clientX: touch.clientX,
-            clientY: touch.clientY
-        });
-        canvas.dispatchEvent(mouseEvent);
-    });
-    
-    canvas.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        const mouseEvent = new MouseEvent('mousemove', {
-            clientX: touch.clientX,
-            clientY: touch.clientY
-        });
-        canvas.dispatchEvent(mouseEvent);
-    });
-    
-    canvas.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        const mouseEvent = new MouseEvent('mouseup', {});
-        canvas.dispatchEvent(mouseEvent);
-    });
+    // Eventos táctiles
+    canvas.addEventListener('touchstart', handleTouchStart);
+    canvas.addEventListener('touchmove', handleTouchMove);
+    canvas.addEventListener('touchend', stopDrawing);
     
     // Funciones de dibujo
     function startDrawing(e) {
         drawing = true;
-        [lastX, lastY] = [e.offsetX, e.offsetY];
+        const pos = getMousePos(e);
+        [lastX, lastY] = [pos.x, pos.y];
+        [startX, startY] = [pos.x, pos.y];
+        
+        if (currentTool === 'brush') {
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+        }
     }
     
     function draw(e) {
         if (!drawing) return;
         
+        e.preventDefault();
+        const pos = getMousePos(e);
+        const x = pos.x;
+        const y = pos.y;
+        
+        ctx.globalAlpha = currentOpacity;
         ctx.strokeStyle = currentColor;
+        ctx.fillStyle = currentColor;
         ctx.lineWidth = currentSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
+        switch(currentTool) {
+            case 'brush':
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                break;
+                
+            case 'eraser':
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.restore();
+                break;
+                
+            case 'line':
+                // Redibujar desde el estado guardado
+                restoreState();
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                break;
+                
+            case 'circle':
+                restoreState();
+                const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
+                ctx.beginPath();
+                ctx.arc(startX, startY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                break;
+        }
         
-        [lastX, lastY] = [e.offsetX, e.offsetY];
+        [lastX, lastY] = [x, y];
     }
     
     function stopDrawing() {
+        if (!drawing) return;
+        
         drawing = false;
+        ctx.closePath();
+        saveState();
     }
     
-    // Selector de color
+    // Funciones de utilidad
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        let x, y;
+        
+        if (e.type.includes('touch')) {
+            x = e.touches[0].clientX - rect.left;
+            y = e.touches[0].clientY - rect.top;
+        } else {
+            x = e.clientX - rect.left;
+            y = e.clientY - rect.top;
+        }
+        
+        return { x, y };
+    }
+    
+    function handleTouchStart(e) {
+        e.preventDefault();
+        startDrawing(e.touches[0]);
+    }
+    
+    function handleTouchMove(e) {
+        e.preventDefault();
+        draw(e.touches[0]);
+    }
+    
+    function resizeCanvas() {
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth - 30;
+        canvas.height = Math.min(500, canvas.width * 0.7);
+        redraw();
+    }
+    
+    function redraw() {
+        if (history.length > 0) {
+            const img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = history[history.length - 1];
+        }
+    }
+    
+    function saveState() {
+        history.push(canvas.toDataURL());
+        if (history.length > 20) history.shift(); // Limitar historial
+    }
+    
+    function restoreState() {
+        if (history.length === 0) return;
+        
+        const img = new Image();
+        img.onload = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = history[history.length - 1];
+    }
+    
+    // Controladores de eventos
     colorOptions.forEach(option => {
         option.addEventListener('click', function() {
             colorOptions.forEach(opt => opt.classList.remove('active'));
@@ -446,42 +515,66 @@ function setupDoodleZone() {
         });
     });
     
-    // Control de grosor del pincel
     brushSize.addEventListener('input', function() {
         currentSize = this.value;
         brushSizeValue.textContent = currentSize;
     });
     
-    // Botón limpiar
-    clearButton.addEventListener('click', function() {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Efecto visual
-        this.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            this.style.transform = 'scale(1)';
-        }, 150);
+    opacity.addEventListener('input', function() {
+        currentOpacity = this.value / 100;
+        opacityValue.textContent = this.value;
     });
     
-    // Botón guardar
-    saveButton.addEventListener('click', function() {
+    toolButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            toolButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentTool = this.getAttribute('data-tool');
+        });
+    });
+    
+    clearBtn.addEventListener('click', function() {
+        if (confirm('¿Estás segura de que quieres limpiar todo el dibujo?')) {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            saveState();
+        }
+    });
+    
+    undoBtn.addEventListener('click', function() {
+        if (history.length > 1) {
+            history.pop(); // Remover estado actual
+            restoreState();
+            history.pop(); // Remover el que acabamos de restaurar
+            saveState(); // Guardar como nuevo estado actual
+        }
+    });
+    
+    saveBtn.addEventListener('click', function() {
         const link = document.createElement('a');
-        link.download = `doodle-luhe-${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.download = `dibujo-luhe-${Date.now()}.png`;
+        link.href = canvas.toDataURL();
         link.click();
-        
-        // Efecto visual
-        this.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            this.style.transform = 'scale(1)';
-        }, 150);
     });
     
-    // Sugerencias de doodles
-    document.querySelectorAll('.prompt').forEach(prompt => {
-        prompt.addEventListener('click', function() {
-            alert(`¡Buena idea! Ahora dibuja: "${this.textContent}"`);
+    fillBtn.addEventListener('click', function() {
+        ctx.fillStyle = '#f9f0ff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        saveState();
+    });
+    
+    ideaButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const idea = this.getAttribute('data-idea');
+            const ideas = {
+                flower: '🌸 Dibuja una flor bonita',
+                cat: '🐱 Dibuja un gatito juguetón',
+                heart: '💜 Dibuja un corazón con detalles',
+                star: '⭐ Dibuja una constelación de estrellas',
+                abstract: '🎨 Deja fluir tu creatividad abstracta'
+            };
+            
+            alert(ideas[idea] || '¡Dibuja algo increíble!');
         });
     });
 }
