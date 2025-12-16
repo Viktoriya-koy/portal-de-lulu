@@ -17,15 +17,15 @@
         <div class="nav-links">
             <a href="#home" class="nav-link active">Inicio</a>
             <a href="#games" class="nav-link">Minijuegos</a>
-            <a href="#doodles" class="nav-link">Zona Doodle</a>
+            <a href="#draw" class="nav-link">Zona de Dibujo</a>
         </div>
     </nav>
 
-    <!-- Sección Principal / Home -->
+    <!-- Sección Principal -->
     <section id="home" class="section active">
         <div class="hero">
             <h1 class="title">Hola, <span class="name">Luhé</span> ✨</h1>
-            <p class="subtitle">Este es tu rincón digital para desconectar, jugar y crear.</p>
+            <p class="subtitle">Tu rincón digital para desconectar y divertirte</p>
             <div class="color-bar">
                 <div class="color-violet"></div>
                 <div class="color-blue"></div>
@@ -33,159 +33,196 @@
             </div>
         </div>
 
-        <!-- Galería de Mensajes Interactivos -->
+        <!-- Mensajes Interactivos -->
         <div class="messages-container">
             <h2><i class="fas fa-comment-dots"></i> Mensajes Especiales</h2>
-            <p class="instruction">Pasa el cursor sobre los elementos para revelar los mensajes</p>
+            <p class="instruction">Haz clic en los elementos para revelar mensajes</p>
             <div class="message-elements">
                 <div class="message-element star" data-message="Los días difíciles pasan, pero tu fuerza queda. Te admiro.">
-                    ⭐
+                    ⭐ Estrella
                 </div>
                 <div class="message-element heart" data-message="Eres más valiente de lo que crees. Confía en tu proceso.">
-                    ❤️
+                    ❤️ Corazón
                 </div>
                 <div class="message-element cat" data-message="Recuerda: hasta los días más grises tienen destellos de luz. Como tú.">
-                    🐱
-                </div>
-                <div class="message-element coffee" data-message="Tu resiliencia me inspira. Siempre.">
-                    ☕
+                    🐱 Gatito
                 </div>
             </div>
             <div class="message-display" id="messageDisplay">
-                Haz hover sobre los iconos para ver mensajes secretos
+                Haz clic en los elementos de arriba
             </div>
         </div>
 
-        <!-- Árbol de Estados de Ánimo -->
+        <!-- Árbol de Estados de Ánimo (CORREGIDO) -->
         <div class="mood-tree">
-            <h2><i class="fas fa-tree"></i> Árbol del Estado de Ánimo</h2>
-            <p class="instruction">Haz clic en cómo te sientes hoy</p>
+            <h2><i class="fas fa-tree"></i> ¿Cómo te sientes hoy?</h2>
+            <p class="instruction">Elige una opción para recibir un mensaje especial</p>
             <div class="tree-container">
-                <div class="tree-trunk"></div>
                 <div class="tree-branches">
-                    <button class="branch" data-mood="frustrada" data-response="Respira hondo. A veces todo necesita su tiempo. ¿Un té?">
+                    <button class="branch" data-response="Respira hondo. A veces todo necesita su tiempo. ¿Un té virtual? ☕">
                         😤 Frustrada
                     </button>
-                    <button class="branch" data-mood="cansada" data-response="Descansa sin culpa. Tu cuerpo y mente lo necesitan. Abrazo virtual.">
+                    <button class="branch" data-response="Descansa sin culpa. Tu cuerpo y mente lo necesitan. Abrazo virtual fuerte. 🤗">
                         😴 Cansada
                     </button>
-                    <button class="branch" data-mood="reflexiva" data-response="Los momentos de pausa son semillas de crecimiento. Escribe, dibuja, sueña.">
+                    <button class="branch" data-response="Los momentos de pausa son semillas de crecimiento. Escribe, dibuja, sueña. ✨">
                         🤔 Reflexiva
                     </button>
-                    <button class="branch" data-mood="tranquila" data-response="¡Qué bien! Disfruta de esta calma. Es un regalo.">
+                    <button class="branch" data-response="¡Qué bien! Disfruta de esta calma. Es un regajo. Mantenlo. 🌿">
                         😌 Tranquila
                     </button>
                 </div>
                 <div class="tree-response" id="treeResponse">
-                    Tu respuesta aparecerá aquí
+                    Tu mensaje especial aparecerá aquí...
                 </div>
             </div>
         </div>
 
-        <!-- Sonidos Relajantes -->
-        <div class="sounds">
-            <h2><i class="fas fa-headphones"></i> Sonidos Relajantes</h2>
-            <div class="sound-controls">
-                <button class="sound-btn" data-sound="rain">
-                    <i class="fas fa-cloud-rain"></i> Lluvia
-                </button>
-                <button class="sound-btn" data-sound="coffee">
-                    <i class="fas fa-mug-hot"></i> Café
-                </button>
-                <button class="sound-btn" data-sound="fire">
-                    <i class="fas fa-fire"></i> Fogata
-                </button>
-                <button class="sound-btn" id="stopSounds">
-                    <i class="fas fa-stop"></i> Parar
-                </button>
+        <!-- Meditación / Respiración (reemplaza sonidos) -->
+        <div class="meditation">
+            <h2><i class="fas fa-spa"></i> Minuto de Calma</h2>
+            <p class="instruction">Sigue el círculo para una respiración guiada</p>
+            <div class="breathing-container">
+                <div class="breathing-circle" id="breathingCircle">
+                    <span class="breath-text">INHALA</span>
+                </div>
+                <div class="breath-controls">
+                    <button id="startBreathing" class="breath-btn">
+                        <i class="fas fa-play"></i> Comenzar
+                    </button>
+                    <button id="stopBreathing" class="breath-btn">
+                        <i class="fas fa-stop"></i> Parar
+                    </button>
+                </div>
+                <p class="breath-instruction" id="breathInstruction">
+                    Haz clic en "Comenzar" para iniciar el ejercicio de respiración
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- Sección de Minijuegos -->
+    <!-- Sección de Juegos -->
     <section id="games" class="section">
         <h2 class="section-title">🎮 Minijuegos</h2>
         
         <!-- Memory Game -->
         <div class="game-container">
             <h3><i class="fas fa-brain"></i> Memory de Gatitos</h3>
-            <p class="instruction">Encuentra las parejas de gatitos. Haz clic en las cartas para voltearlas.</p>
+            <p class="instruction">Encuentra las parejas de gatitos. Haz clic en las cartas.</p>
             <div class="game-controls">
-                <div class="score">Pares encontrados: <span id="score">0</span>/6</div>
-                <button id="resetMemory" class="game-btn">Reiniciar Juego</button>
+                <div class="score">Pares: <span id="score">0</span>/6 | Movimientos: <span id="moves">0</span></div>
+                <button id="resetMemory" class="game-btn">Nuevo Juego</button>
             </div>
             <div class="memory-board" id="memoryBoard">
                 <!-- Cartas generadas por JavaScript -->
             </div>
         </div>
 
-        <!-- Generador de Doodles Aleatorios -->
+        <!-- Juego de Reacción -->
         <div class="game-container">
-            <h3><i class="fas fa-magic"></i> Generador de Doodles Aleatorios</h3>
-            <p class="instruction">Cada clic crea un doodle único con un nombre especial.</p>
-            <div class="doodle-generator">
-                <button id="generateDoodle" class="game-btn big-btn">
-                    <i class="fas fa-bolt"></i> ¡Generar Doodle Mágico!
-                </button>
-                <div class="doodle-display">
-                    <div class="doodle-canvas" id="randomDoodle">
-                        <!-- Doodle SVG generado aquí -->
-                        <svg id="doodleSVG" width="200" height="150"></svg>
-                    </div>
-                    <div class="doodle-name" id="doodleName">
-                        Esperando tu creación...
-                    </div>
+            <h3><i class="fas fa-bolt"></i> Juego de Reacción</h3>
+            <p class="instruction">Haz clic en los círculos cuanto aparezcan. ¡Mide tus reflejos!</p>
+            <div class="reaction-game">
+                <div class="reaction-stats">
+                    <div>Tiempo: <span id="reactionTime">0</span>ms</div>
+                    <div>Aciertos: <span id="reactionScore">0</span></div>
+                    <div>Record: <span id="reactionBest">0</span>ms</div>
+                </div>
+                <div class="reaction-area" id="reactionArea">
+                    <p>Haz clic en "Comenzar"</p>
+                </div>
+                <div class="reaction-controls">
+                    <button id="startReaction" class="game-btn">Comenzar Juego</button>
+                    <button id="resetReaction" class="game-btn">Reiniciar</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Zona de Doodles -->
-    <section id="doodles" class="section">
-        <h2 class="section-title">✏️ Zona de Doodles</h2>
-        <p class="subtitle">Libera tu creatividad en esta pizarra digital</p>
+    <!-- Zona de Dibujo (MEJORADA) -->
+    <section id="draw" class="section">
+        <h2 class="section-title">✏️ Zona de Dibujo Libre</h2>
+        <p class="subtitle">Dibuja lo que sientas, usa colores, borra, guarda tu arte</p>
         
-        <div class="doodle-zone">
-            <!-- Controles de dibujo -->
+        <div class="drawing-zone">
+            <!-- Controles -->
             <div class="drawing-controls">
-                <div class="color-picker">
-                    <div class="color-option active" data-color="#8A2BE2" style="background-color: #8A2BE2;"></div>
-                    <div class="color-option" data-color="#4B0082" style="background-color: #4B0082;"></div>
-                    <div class="color-option" data-color="#4169E1" style="background-color: #4169E1;"></div>
-                    <div class="color-option" data-color="#00BFFF" style="background-color: #00BFFF;"></div>
-                    <div class="color-option" data-color="#000000" style="background-color: #000000;"></div>
+                <div class="tools">
+                    <h4><i class="fas fa-paint-brush"></i> Herramientas</h4>
+                    <div class="tool-buttons">
+                        <button class="tool-btn active" data-tool="brush">
+                            <i class="fas fa-paint-brush"></i> Pincel
+                        </button>
+                        <button class="tool-btn" data-tool="eraser">
+                            <i class="fas fa-eraser"></i> Borrador
+                        </button>
+                        <button class="tool-btn" data-tool="line">
+                            <i class="fas fa-slash"></i> Línea
+                        </button>
+                        <button class="tool-btn" data-tool="circle">
+                            <i class="fas fa-circle"></i> Círculo
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="colors">
+                    <h4><i class="fas fa-palette"></i> Colores</h4>
+                    <div class="color-picker">
+                        <div class="color-option active" data-color="#8A2BE2" style="background-color: #8A2BE2;" title="Violeta"></div>
+                        <div class="color-option" data-color="#4B0082" style="background-color: #4B0082;" title="Índigo"></div>
+                        <div class="color-option" data-color="#4169E1" style="background-color: #4169E1;" title="Azul Real"></div>
+                        <div class="color-option" data-color="#00BFFF" style="background-color: #00BFFF;" title="Azul Cielo"></div>
+                        <div class="color-option" data-color="#FF69B4" style="background-color: #FF69B4;" title="Rosa"></div>
+                        <div class="color-option" data-color="#000000" style="background-color: #000000;" title="Negro"></div>
+                        <div class="color-option" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 1px solid #ccc;" title="Blanco"></div>
+                    </div>
                 </div>
                 
                 <div class="brush-controls">
-                    <label for="brushSize">Grosor del pincel: <span id="brushSizeValue">5</span>px</label>
-                    <input type="range" id="brushSize" min="1" max="20" value="5">
-                </div>
-                
-                <div class="doodle-buttons">
-                    <button id="clearCanvas" class="doodle-btn">
-                        <i class="fas fa-eraser"></i> Limpiar
-                    </button>
-                    <button id="saveDoodle" class="doodle-btn">
-                        <i class="fas fa-download"></i> Guardar
-                    </button>
+                    <h4><i class="fas fa-sliders-h"></i> Pincel</h4>
+                    <div class="brush-slider">
+                        <label>Grosor: <span id="brushSizeValue">5</span>px</label>
+                        <input type="range" id="brushSize" min="1" max="50" value="5">
+                    </div>
+                    <div class="opacity-slider">
+                        <label>Opacidad: <span id="opacityValue">100</span>%</label>
+                        <input type="range" id="opacity" min="10" max="100" value="100">
+                    </div>
                 </div>
             </div>
             
-            <!-- Canvas para dibujar -->
+            <!-- Área de dibujo -->
             <div class="canvas-container">
-                <canvas id="doodleCanvas" width="800" height="500">
-                    Tu navegador no soporta canvas. Actualízalo para dibujar.
+                <canvas id="drawingCanvas" width="800" height="500">
+                    Tu navegador no soporta canvas
                 </canvas>
             </div>
             
-            <!-- Sugerencias de doodles -->
-            <div class="doodle-prompts">
-                <h4><i class="fas fa-lightbulb"></i> Ideas para empezar:</h4>
-                <div class="prompts">
-                    <span class="prompt">Dibuja tu emoción de hoy</span>
-                    <span class="prompt">Dibuja algo que te dé paz</span>
-                    <span class="prompt">Dibuja un animal imaginario</span>
-                    <span class="prompt">Dibuja un paisaje de otro planeta</span>
+            <!-- Acciones -->
+            <div class="drawing-actions">
+                <button id="clearCanvas" class="action-btn">
+                    <i class="fas fa-trash"></i> Limpiar Todo
+                </button>
+                <button id="undoDrawing" class="action-btn">
+                    <i class="fas fa-undo"></i> Deshacer
+                </button>
+                <button id="saveDrawing" class="action-btn">
+                    <i class="fas fa-download"></i> Guardar Dibujo
+                </button>
+                <button id="fillBackground" class="action-btn">
+                    <i class="fas fa-fill-drip"></i> Fondo Violeta
+                </button>
+            </div>
+            
+            <!-- Ideas -->
+            <div class="drawing-ideas">
+                <h4><i class="fas fa-lightbulb"></i> Ideas para dibujar</h4>
+                <div class="idea-buttons">
+                    <button class="idea-btn" data-idea="flower">🌸 Una flor</button>
+                    <button class="idea-btn" data-idea="cat">🐱 Un gatito</button>
+                    <button class="idea-btn" data-idea="heart">💜 Un corazón</button>
+                    <button class="idea-btn" data-idea="star">⭐ Una estrella</button>
+                    <button class="idea-btn" data-idea="abstract">🎨 Abstracto</button>
                 </div>
             </div>
         </div>
@@ -193,12 +230,10 @@
 
     <!-- Footer -->
     <footer>
-        <p>Hecho con <i class="fas fa-heart"></i> para Luhé • Portal interactivo • <span id="currentYear"></span></p>
-        <p class="footer-note">Este sitio funciona completamente en tu navegador. ¡Disfruta!</p>
+        <p>Hecho con <i class="fas fa-heart"></i> para Luhé • Portal Interactivo • <span id="currentYear"></span></p>
+        <p class="footer-note">¡Disfruta tu espacio creativo! Todo funciona offline.</p>
     </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
